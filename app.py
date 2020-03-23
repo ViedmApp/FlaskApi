@@ -18,11 +18,6 @@ api = Api(app)
 jwt = JWTManager(app)
 
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
 api.add_resource(UserList, '/users/<int:_id>')
 api.add_resource(SheepDelete, '/sheep/<int:_id>')
 api.add_resource(CheckToken, '/au')
