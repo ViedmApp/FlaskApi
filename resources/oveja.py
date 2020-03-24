@@ -34,6 +34,8 @@ class SheepAdd(Resource):
                         help="This field cannot be left blank")
     parser.add_argument('farms_id', type=str, required=True,
                         help="This field cannot be left blank")
+    parser.add_argument('_id', type=str, required=True,
+                        help="This field cannot be left blank")
 
     @jwt_required
     def post(self):
@@ -47,8 +49,48 @@ class SheepAdd(Resource):
             return sheep.json(), 201
         return {'error': 'sheep created baddly'}, 401
 
-    def put(self):
-        return "Oveja Actualizado"
+
+class SheepUpdate(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('earring', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('earring_color', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('gender', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('breed', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('birth_weight', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('date_birth', type=str, required=False,
+                        help="This field cannot be left blank")
+    parser.add_argument('purpose', type=str, required=False,
+                        help="This field cannot be left blank")
+    parser.add_argument('category', type=str, required=False,
+                        help="This field cannot be left blank")
+    parser.add_argument('merit', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('is_dead', type=str, required=True,
+                        help="This field cannot be left blank")
+
+    @jwt_required
+    def put(self, _id):
+
+        data = SheepUpdate.parser.parse_args()
+        sheep = Sheep_Model.query.get(_id)
+        sheep.earring = data['earring']
+        sheep.earring_color = data['earring_color']
+        sheep.gender = data['gender']
+        sheep.breed = data['breed']
+        sheep.birth_weight = data['birth_weight']
+        sheep.date_birth = data['date_birth']
+        sheep.purpose = data['purpose']
+        sheep.category = data['category']
+        sheep.merit = data['merit']
+        sheep.is_dead = data['is_dead']
+        if sheep:
+            sheep.save_to_db()
+            return sheep.json()
 
 
 class SheepDelete(Resource):

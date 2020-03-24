@@ -5,13 +5,14 @@ import os
 
 from security import authenticate, identity
 from resources.usuario import UserRegister, UserLogin, UserList, CheckToken
-from resources.oveja import SheepAdd, SheepList, SheepDelete
+from resources.oveja import SheepAdd, SheepList, SheepDelete, SheepUpdate
 from resources.predio import FarmsAdd
 from resources.usuarios_predio import AddUserFarm
 
 from flask_jwt_extended import JWTManager
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL', 'sqlite:///data.db')
 app.config['SQLACHEMY_TRACK_MODIFICATION'] = False
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 api = Api(app)
@@ -28,6 +29,7 @@ api.add_resource(SheepAdd, '/sheep')
 api.add_resource(SheepList, '/sheep/<int:_id>')
 api.add_resource(FarmsAdd, '/predio')
 api.add_resource(AddUserFarm, '/userpredio')
+api.add_resource(SheepUpdate, '/updatesheep/<int:_id>')
 
 
 if __name__ == '__main__':

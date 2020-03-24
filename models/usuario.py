@@ -36,7 +36,7 @@ class Users_Model(db.Model):
         return{'name': self.name, 'last_name': self.last_name, 'rut': self.rut, 'email': self.email}
 
     def all_info(self):
-        return{'rut': self.rut, 'email': self.email}
+        return{'rut': self.rut, 'email': self.email, 'name': self.name, 'last_name': self.last_name}
 
     @classmethod
     def get_alls(cls):
