@@ -11,8 +11,7 @@ from resources.usuarios_predio import AddUserFarm
 
 from flask_jwt_extended import JWTManager
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'sqlite:///data.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLACHEMY_TRACK_MODIFICATION'] = False
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 api = Api(app)
