@@ -5,7 +5,7 @@ from flask_mail import Mail, Message
 import os
 
 from security import authenticate, identity
-from resources.usuario import UserRegister, UserLogin, UserList, CheckToken
+from resources.usuario import UserRegister, UserLogin, UserList, CheckToken, ChangePassword
 from resources.oveja import SheepAdd, SheepList, SheepDelete, SheepUpdate
 from resources.predio import FarmsAdd
 from resources.usuarios_predio import AddUserFarm
@@ -38,6 +38,7 @@ api.add_resource(SheepList, '/sheep/<int:_id>')
 api.add_resource(FarmsAdd, '/predio')
 api.add_resource(AddUserFarm, '/userpredio')
 api.add_resource(SheepUpdate, '/updatesheep/<int:_id>')
+api.add_resource(ChangePassword, '/changepassword')
 
 
 if __name__ == '__main__':

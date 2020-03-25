@@ -33,10 +33,10 @@ class Users_Model(db.Model):
         db.session.commit()
 
     def json(self):
-        return{'name': self.name, 'last_name': self.last_name, 'rut': self.rut, 'email': self.email}
+        return{'name': self.name, 'last_name': self.last_name, 'rut': self.rut, 'email': self.email, 'phone': self.phone}
 
     def all_info(self):
-        return{'rut': self.rut, 'email': self.email, 'name': self.name, 'last_name': self.last_name}
+        return{'rut': self.rut, 'email': self.email, 'name': self.name, 'last_name': self.last_name, 'phone': self.phone, 'password': self.password}
 
     @classmethod
     def get_alls(cls):

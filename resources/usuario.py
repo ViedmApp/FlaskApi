@@ -45,17 +45,7 @@ class UserRegister(Resource):
                         help="This field cannot be left blank")
     parser.add_argument('last_name', type=str, required=True,
                         help="This field cannot be left blank")
-    parser.add_argument('rut', type=str, required=True,
-                        help="This field cannot be left blank")
-    parser.add_argument('email', type=str, required=True,
-                        help="This field cannot be left blank")
-    parser.add_argument('password', type=str, required=False,
-                        help="This field cannot be left blank")
     parser.add_argument('phone', type=int, required=False,
-                        help="This field cannot be left blank")
-    parser.add_argument("farms_id", type=str, required=True,
-                        help="This field cannot be left blank")
-    parser.add_argument("can_edit", type=str, required=True,
                         help="This field cannot be left blank")
     """
     def post(self):
@@ -76,6 +66,17 @@ class UserRegister(Resource):
 """
 
     def post(self):
+        parser.add_argument('rut', type=str, required=True,
+                            help="This field cannot be left blank")
+        parser.add_argument('email', type=str, required=True,
+                            help="This field cannot be left blank")
+        parser.add_argument('password', type=str, required=False,
+                            help="This field cannot be left blank")
+        parser.add_argument("farms_id", type=str, required=True,
+                            help="This field cannot be left blank")
+        parser.add_argument("can_edit", type=str, required=True,
+                            help="This field cannot be left blank")
+
         data = UserRegister.parser.parse_args()
         user = Users_Model.find_by_rut(data['rut'])
         if user == None:
@@ -92,6 +93,16 @@ class UserRegister(Resource):
             user_farm.save_to_db()
             return user.json(), 201
         return {'error': 'farm created baddly'}, 401
+
+    @jwt_required
+    def put(self):
+        data = UserRegister.parser.parse_args()
+        current_user = get_jwt_identity()
+        user = Users_Model.find_by_id(current_user)
+        user.name = data['name']
+        user.last_name = data['last_name']
+        user.phone = data['phone']
+        user.save_to_db()
 
 
 class UserLogin(Resource):
@@ -130,3 +141,23 @@ class CheckToken(Resource):
         current_user = get_jwt_identity()
         user = Users_Model.find_by_id(current_user)
         return user.all_info()
+
+
+class ChangePassword(Resource):
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('password', type=str, required=False,
+                        help="This field cannot be left blank")
+    parser.add_argument('password2', type=str, required=False,
+                        help="This field cannot be left blank")
+
+    @jwt_required
+    def put(self):
+        data = ChangePassword.parser.parse_args()
+        current_user = get_jwt_identity()
+        user = Users_Model.find_by_id(current_user)
+        if user and check_encrypted_password(data["password"], user.password):
+            user.password = encrypt_password(data['password2'])
+            user.save_to_db()
+            return 200
+        return {'La contraseña actual no es correcta', 404}
