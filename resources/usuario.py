@@ -8,6 +8,7 @@ from models.predio import Farms_Model
 from models.oveja import Sheep_Model
 from models.filiacion import Filiations_Model
 
+
 from resources.usuarios_predio import AddUserFarm
 
 from security import encrypt_password, check_encrypted_password
@@ -23,7 +24,22 @@ from flask_jwt_extended import (
 )
 
 
+def send_email(correo, rut, name, last_name):
+    from flask_mail import Message
+    from app import mail
+
+    msg = Message('Se ha creado una cuenta en SmartSheep',
+                  sender='smartsheep@guachmail.com',
+                  recipients=[correo]
+                  )
+    msg.body = 'Hola {} {} Se creo con éxito una cuenta en SmartSheep su contraseña por defecto es : {}'.format(
+        name, last_name, rut[:4])
+    mail.send(msg)
+    return 'Sent'
+
+
 class UserRegister(Resource):
+
     parser = reqparse.RequestParser()
     parser.add_argument('name', type=str, required=True,
                         help="This field cannot be left blank")
@@ -67,6 +83,8 @@ class UserRegister(Resource):
             user = Users_Model(data['rut'], data['name'], data['last_name'], encrypt_password(
                 password), data['phone'], data['email'])
             user.save_to_db()
+            send_email(data['email'], data['rut'],
+                       data['name'], data['last_name'])
 
         user_farm = Users_Farms_Model(data['can_edit'], "T",
                                       "F", user.id, data["farms_id"])

@@ -34,8 +34,6 @@ class SheepAdd(Resource):
                         help="This field cannot be left blank")
     parser.add_argument('farms_id', type=str, required=True,
                         help="This field cannot be left blank")
-    parser.add_argument('_id', type=str, required=True,
-                        help="This field cannot be left blank")
 
     @jwt_required
     def post(self):

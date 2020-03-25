@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
+from flask_mail import Mail, Message
 import os
 
 from security import authenticate, identity
@@ -14,7 +15,15 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLACHEMY_TRACK_MODIFICATION'] = False
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'smartsheepuach@gmail.com'
+app.config['MAIL_PASSWORD'] = 'smartsheepcl'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 api = Api(app)
+mail = Mail(app)
+
 
 jwt = JWTManager(app)
 

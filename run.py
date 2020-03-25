@@ -1,6 +1,6 @@
 from app import app
 from db import db
-
+from mail import mail
 db.init_app(app)
 
 
