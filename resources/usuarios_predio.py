@@ -45,3 +45,16 @@ class AddUserFarm(Resource):
         user = Users_Model.query.get(current_user)
         print(user.farms)
         return [userfarm.json() for userfarm in user.farms]
+
+
+class CurrenUsersPermitions(Resource):
+    @jwt_required
+    def get(self, _id):
+        current_user = get_jwt_identity()
+        user = Users_Model.query.get(current_user)
+        for userfarm in user.farms:
+            print(userfarm.json())
+            print(userfarm.id)
+            if (userfarm.farms_id == _id):
+                return userfarm.super_user
+        return 404

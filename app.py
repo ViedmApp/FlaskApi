@@ -8,7 +8,7 @@ from security import authenticate, identity
 from resources.usuario import UserRegister, UserLogin, UserList, CheckToken, ChangePassword
 from resources.oveja import SheepAdd, SheepList, SheepDelete, SheepUpdate
 from resources.predio import FarmsAdd
-from resources.usuarios_predio import AddUserFarm
+from resources.usuarios_predio import AddUserFarm, CurrenUsersPermitions
 
 from flask_jwt_extended import JWTManager
 app = Flask(__name__)
@@ -39,6 +39,7 @@ api.add_resource(FarmsAdd, '/predio')
 api.add_resource(AddUserFarm, '/userpredio')
 api.add_resource(SheepUpdate, '/updatesheep/<int:_id>')
 api.add_resource(ChangePassword, '/changepassword')
+api.add_resource(CurrenUsersPermitions, '/permitions/<int:_id>')
 
 
 if __name__ == '__main__':
