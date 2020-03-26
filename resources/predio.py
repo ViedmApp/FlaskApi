@@ -28,8 +28,8 @@ class FarmsAdd(Resource):
             farm.save_to_db()
         current_user = get_jwt_identity()
 
-        user_farm = Users_Farms_Model("T", "T",
-                                      "T", current_user, farm.id)
+        user_farm = Users_Farms_Model("1", "1",
+                                      "1", current_user, farm.id)
         if user_farm:
             user_farm.save_to_db()
             return farm.json(), 201

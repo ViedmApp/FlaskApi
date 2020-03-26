@@ -32,8 +32,8 @@ def send_email(correo, rut, name, last_name):
                   sender='smartsheep@guachmail.com',
                   recipients=[correo]
                   )
-    msg.body = 'Hola {} {} Se creo con éxito una cuenta en SmartSheep su contraseña por defecto es : {}'.format(
-        name, last_name, rut[:4])
+    msg.body = 'SmartSheep: \n \n Te damos la bienvenida a SmartSheep.cl, la mejor aplicación para gestión de ganadería ovina. \n \n Recuerda que esta cuenta será sólo tuya. Nunca compartas tu clave. \n \n Estos son tus datos para ingresar: \n  \n Email: {} \n Contraseña: {} \n \n Saludos, Equipo ViedmApp.'.format(
+        correo, rut[:4])
     mail.send(msg)
     return 'Sent'
 
@@ -87,7 +87,7 @@ class UserRegister(Resource):
             send_email(data['email'], data['rut'],
                        data['name'], data['last_name'])
 
-        user_farm = Users_Farms_Model('1' '1',
+        user_farm = Users_Farms_Model('1', '1',
                                       '0', user.id, data["farms_id"])
         if user_farm:
             user_farm.save_to_db()
@@ -102,8 +102,7 @@ class UserRegister(Resource):
                             help="This field cannot be left blank")
         parser.add_argument('last_name', type=str, required=True,
                             help="This field cannot be left blank")
-        parser.add_argument('phone', type=int, required=False,
-                            help="This field cannot be left blank")
+        parser.add_argument('phone', type=str, required=False)
         data = parser.parse_args()
         current_user = get_jwt_identity()
         user = Users_Model.find_by_id(current_user)
@@ -169,3 +168,41 @@ class ChangePassword(Resource):
             user.save_to_db()
             return 200
         return {'La contraseña actual no es correcta', 404}
+
+
+class AddAdministrator(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('last_name', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('phone', type=int, required=False,
+                        help="This field cannot be left blank")
+    parser.add_argument('rut', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('email', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('password', type=str, required=False,
+                        help="This field cannot be left blank")
+    parser.add_argument('name_farm', type=str, required=True,
+                        help="This field cannot be left blank")
+    parser.add_argument('latitude', type=str, required=False,
+                        help="This field cannot be left blank")
+    parser.add_argument('longitude', type=str, required=False)
+    def post(self):
+
+        data = AddAdministrator.parser.parse_args()
+        password = data['rut'][:4]
+        user = Users_Model(data['rut'], data['name'], data['last_name'], encrypt_password(
+            password), data['phone'], data['email'])
+        user.save_to_db()
+        send_email(data['email'], data['rut'],
+                   data['name'], data['last_name'])
+
+        farm = Farms_Model(data['name_farm'],
+                           data['latitude'], data['longitude'])
+        farm.save_to_db()
+        user_farm = Users_Farms_Model("1", "1",
+                                      "1", user.id, farm.id)
+        user_farm.save_to_db()
+        return 201
