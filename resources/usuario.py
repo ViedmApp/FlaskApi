@@ -74,7 +74,7 @@ class UserRegister(Resource):
                             help="This field cannot be left blank")
         parser.add_argument("farms_id", type=str, required=True,
                             help="This field cannot be left blank")
-        parser.add_argument("can_edit", type=str, required=True,
+        parser.add_argument("can_edit", type=str, required=False,
                             help="This field cannot be left blank")
 
         data = parser.parse_args()
@@ -87,8 +87,8 @@ class UserRegister(Resource):
             send_email(data['email'], data['rut'],
                        data['name'], data['last_name'])
 
-        user_farm = Users_Farms_Model(data['can_edit'], "T",
-                                      "F", user.id, data["farms_id"])
+        user_farm = Users_Farms_Model('1' '1',
+                                      '0', user.id, data["farms_id"])
         if user_farm:
             user_farm.save_to_db()
             return user.json(), 201
