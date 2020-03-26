@@ -40,13 +40,6 @@ def send_email(correo, rut, name, last_name):
 
 class UserRegister(Resource):
 
-    parser = reqparse.RequestParser()
-    parser.add_argument('name', type=str, required=True,
-                        help="This field cannot be left blank")
-    parser.add_argument('last_name', type=str, required=True,
-                        help="This field cannot be left blank")
-    parser.add_argument('phone', type=int, required=False,
-                        help="This field cannot be left blank")
     """
     def post(self):
         data = UserRegister.parser.parse_args()
@@ -66,6 +59,13 @@ class UserRegister(Resource):
 """
 
     def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True,
+                            help="This field cannot be left blank")
+        parser.add_argument('last_name', type=str, required=True,
+                            help="This field cannot be left blank")
+        parser.add_argument('phone', type=int, required=False,
+                            help="This field cannot be left blank")
         parser.add_argument('rut', type=str, required=True,
                             help="This field cannot be left blank")
         parser.add_argument('email', type=str, required=True,
@@ -77,7 +77,7 @@ class UserRegister(Resource):
         parser.add_argument("can_edit", type=str, required=True,
                             help="This field cannot be left blank")
 
-        data = UserRegister.parser.parse_args()
+        data = parser.parse_args()
         user = Users_Model.find_by_rut(data['rut'])
         if user == None:
             password = data['rut'][:4]
@@ -96,7 +96,15 @@ class UserRegister(Resource):
 
     @jwt_required
     def put(self):
-        data = UserRegister.parser.parse_args()
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True,
+                            help="This field cannot be left blank")
+        parser.add_argument('last_name', type=str, required=True,
+                            help="This field cannot be left blank")
+        parser.add_argument('phone', type=int, required=False,
+                            help="This field cannot be left blank")
+        data = parser.parse_args()
         current_user = get_jwt_identity()
         user = Users_Model.find_by_id(current_user)
         user.name = data['name']
