@@ -150,6 +150,24 @@ class CheckToken(Resource):
         return user.all_info()
 
 
+class CheckPassword(Resource):
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('password', type=str, required=False,
+                        help="This field cannot be left blank")
+
+    @jwt_required
+    def post(self):
+        data = CheckPassword.parser.parse_args()
+        current_user = get_jwt_identity()
+        print(current_user)
+        user = Users_Model.find_by_id(current_user)
+        if user and check_encrypted_password(data["password"], user.password):
+            return 1
+        else:
+            return 0
+
+
 class ChangePassword(Resource):
     parser = reqparse.RequestParser()
 

@@ -5,14 +5,15 @@ from flask_mail import Mail, Message
 import os
 
 from security import authenticate, identity
-from resources.usuario import UserRegister, UserLogin, UserList, CheckToken, ChangePassword, AddAdministrator
+from resources.usuario import UserRegister, UserLogin, UserList, CheckToken, ChangePassword, AddAdministrator, CheckPassword
 from resources.oveja import SheepAdd, SheepList, SheepDelete, SheepUpdate
 from resources.predio import FarmsAdd
 from resources.usuarios_predio import AddUserFarm, CurrenUsersPermitions
 
 from flask_jwt_extended import JWTManager
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL', 'sqlite:///data.db')
 app.config['SQLACHEMY_TRACK_MODIFICATION'] = False
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -41,7 +42,7 @@ api.add_resource(SheepUpdate, '/updatesheep/<int:_id>')
 api.add_resource(ChangePassword, '/changepassword')
 api.add_resource(CurrenUsersPermitions, '/permitions/<int:_id>')
 api.add_resource(AddAdministrator, '/addadmin')
-
+api.add_resource(CheckPassword, '/checkpassword')
 
 if __name__ == '__main__':
     from db import db
